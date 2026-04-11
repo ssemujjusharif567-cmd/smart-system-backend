@@ -27,7 +27,19 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-0npl)as65*a+7_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 web-production-9b27a.up.railway.app').split()
+import re
+
+ALLOWED_HOSTS = [
+    h.strip()
+    for h in re.split(r'[,\s]+', os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 web-production-9b27a.up.railway.app'))
+    if h.strip()
+]
+
+# Strip protocol and path — keep hostname only
+ALLOWED_HOSTS = [
+    re.sub(r'^https?://', '', h).split('/')[0]
+    for h in ALLOWED_HOSTS
+]
 
 if not DEBUG and not os.environ.get('ALLOWED_HOSTS'):
     ALLOWED_HOSTS = ['*']
@@ -60,7 +72,11 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://localhost:5173 http://localhost:5174 https://web-production-9b27a.up.railway.app https://ssemujjusharif567-cmd.github.io').split()
+CSRF_TRUSTED_ORIGINS = [
+    re.sub(r'/$', '', h.strip())
+    for h in re.split(r'[,\s]+', os.environ.get('CSRF_TRUSTED_ORIGINS', 'http://localhost:5173 http://localhost:5174 https://web-production-9b27a.up.railway.app https://ssemujjusharif567-cmd.github.io'))
+    if h.strip()
+]
 SESSION_COOKIE_SAMESITE = os.environ.get('SESSION_COOKIE_SAMESITE', 'Lax')
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = os.environ.get('CSRF_COOKIE_SAMESITE', 'Lax')
