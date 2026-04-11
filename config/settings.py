@@ -29,6 +29,9 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1 web-production-9b27a.up.railway.app').split()
 
+if not DEBUG and not os.environ.get('ALLOWED_HOSTS'):
+    ALLOWED_HOSTS = ['*']
+
 
 # Application definition
 
